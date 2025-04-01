@@ -52,13 +52,14 @@ function loadNotes() {
     notesContainer.innerHTML = "";
     const notes = getNotesFromStorage();
      // Loop through each note and create a card
-     notes.forEach((notes, index) => {
+     notes.forEach((note, index) => {
         const noteCards = document.createElement("div");
         noteCards.classList.add("note-card")
 
         //note Content
         const noteText = document.createElement("div");
         noteText.classList.add("note-text");
+        noteText.textContent = note;
 
         // Note actions: Edit & Delete
          const actions = document.createElement("div");
@@ -75,8 +76,40 @@ function loadNotes() {
              deleteBtn.addEventListener("click", () => deleteNote(index));
         
         // Append the edit and delete buttons to the action div
-        
+        actions.appendChild(editBtn);
+        actions.appendChild(deleteBtn);
 
-     })
+        // Append text and actions to the card
+        noteCards.appendChild(noteText);
+        noteCards.appendChild(actions);
 
+        // Append the card to the notes container
+        notesContainer.appendChild(noteCards);
+
+     });
 };
+
+// ===============================
+// FUNCTION: Delete a Note
+// ===============================
+function deleteNote(index) {
+    let notes = getNotesFromStorage();
+    notes.splice(index, 1);
+    localStorage.setItem("notes", JSON.stringify(notes));
+    loadNotes();
+};
+
+// ===============================
+// FUNCTION: Edit a Note
+// ===============================
+function editNote(index) {
+    let notes = getNotesFromStorage();
+    const updatedText = prompt("Edit your note:", notes[index]);
+  
+    // Only update if user didn't cancel and input isn't empty
+    if (updatedText !== null && updatedText.trim() !== "") {
+      notes[index] = updatedText.trim();
+      localStorage.setItem("notes", JSON.stringify(notes));
+      loadNotes();
+    }
+  }
